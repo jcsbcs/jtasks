@@ -60,6 +60,13 @@
             padding: 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             border: 2px solid #610B0B;
+            cursor: move;
+            transition: transform 0.2s;
+        }
+        
+        .widget.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
         }
         
         .widget.brain-widget {
@@ -115,6 +122,19 @@
             font-size: 1.3em;
             font-weight: 600;
             color: #F5F5DC;
+            cursor: text;
+            padding: 2px 5px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        
+        .widget-title:hover {
+            background: rgba(97, 11, 11, 0.2);
+        }
+        
+        .widget-title[contenteditable="true"] {
+            outline: 2px solid #610B0B;
+            background: #000000;
         }
         
         .add-btn {
@@ -185,6 +205,19 @@
         .task-text {
             flex: 1;
             color: #F5F5DC;
+            cursor: text;
+            padding: 2px 5px;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        
+        .task-text:hover {
+            background: rgba(97, 11, 11, 0.2);
+        }
+        
+        .task-text[contenteditable="true"] {
+            outline: 2px solid #610B0B;
+            background: #1a1a1a;
         }
         
         .task-item.hidden .task-text {
@@ -365,18 +398,18 @@
         <div class="total-tasks" id="totalTasks">Total Tasks: 0</div>
     </div>
     
-    <div class="widgets-container">
-        <div class="widget brain-widget">
+    <div class="widgets-container" id="widgetsContainer">
+        <div class="widget brain-widget" draggable="true" data-widget-id="brain">
             <div class="widget-header">
-                <h2 class="widget-title">Brain</h2>
+                <h2 class="widget-title" contenteditable="true" data-widget-id="brain" onblur="saveWidgetTitle(this)">Brain</h2>
             </div>
             <textarea class="brain-textarea" id="brainText" placeholder="Write your thoughts here..."></textarea>
             <button class="save-brain-btn" onclick="saveBrain()">Save Notes</button>
         </div>
         
-        <div class="widget" data-widget="daily-tasks">
+        <div class="widget" draggable="true" data-widget-id="daily-tasks" data-widget="daily-tasks">
             <div class="widget-header">
-                <h2 class="widget-title">Daily Tasks</h2>
+                <h2 class="widget-title" contenteditable="true" data-widget-id="daily-tasks" onblur="saveWidgetTitle(this)">Daily Tasks</h2>
                 <button class="add-btn" onclick="showInput('daily-tasks')">+</button>
             </div>
             <div class="input-container" id="input-daily-tasks">
@@ -390,9 +423,9 @@
             <div class="widget-footer" id="footer-daily-tasks">0 / 0 tasks</div>
         </div>
         
-        <div class="widget" data-widget="to-buy">
+        <div class="widget" draggable="true" data-widget-id="to-buy" data-widget="to-buy">
             <div class="widget-header">
-                <h2 class="widget-title">To Buy</h2>
+                <h2 class="widget-title" contenteditable="true" data-widget-id="to-buy" onblur="saveWidgetTitle(this)">To Buy</h2>
                 <button class="add-btn" onclick="showInput('to-buy')">+</button>
             </div>
             <div class="input-container" id="input-to-buy">
@@ -406,9 +439,9 @@
             <div class="widget-footer" id="footer-to-buy">0 / 0 tasks</div>
         </div>
         
-        <div class="widget" data-widget="one-time-tasks">
+        <div class="widget" draggable="true" data-widget-id="one-time-tasks" data-widget="one-time-tasks">
             <div class="widget-header">
-                <h2 class="widget-title">One-Time Tasks</h2>
+                <h2 class="widget-title" contenteditable="true" data-widget-id="one-time-tasks" onblur="saveWidgetTitle(this)">One-Time Tasks</h2>
                 <button class="add-btn" onclick="showInput('one-time-tasks')">+</button>
             </div>
             <div class="input-container" id="input-one-time-tasks">
@@ -422,9 +455,9 @@
             <div class="widget-footer" id="footer-one-time-tasks">0 / 0 tasks</div>
         </div>
         
-        <div class="widget" data-widget="ideas">
+        <div class="widget" draggable="true" data-widget-id="ideas" data-widget="ideas">
             <div class="widget-header">
-                <h2 class="widget-title">Ideas</h2>
+                <h2 class="widget-title" contenteditable="true" data-widget-id="ideas" onblur="saveWidgetTitle(this)">Ideas</h2>
                 <button class="add-btn" onclick="showInput('ideas')">+</button>
             </div>
             <div class="input-container" id="input-ideas">
@@ -453,7 +486,7 @@
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, setDoc, updateDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // Check if user is logged in
         if (!sessionStorage.getItem('isLoggedIn')) {
@@ -476,7 +509,7 @@
 
         // Store globally for other functions
         window.db = db;
-        window.firestoreModules = { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, setDoc, updateDoc };
+        window.firestoreModules = { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, setDoc, updateDoc, getDoc };
 
         // Update datetime
         function updateDateTime() {
@@ -559,7 +592,7 @@
             
             li.innerHTML = `
                 <span class="task-number">${numberDisplay}</span>
-                <span class="task-text">${taskText}</span>
+                <span class="task-text" contenteditable="true" data-task-id="${taskId}" data-widget-id="${widgetId}" onblur="saveTaskText(this)">${taskText}</span>
                 <div class="task-buttons">
                     <button class="hide-btn" onclick="toggleHideTask('${widgetId}', '${taskId}')">${hideIcon}</button>
                     <button class="delete-btn" onclick="showDeleteModal('${widgetId}', '${taskId}')">−</button>
@@ -727,6 +760,184 @@
         
         window.saveBrain = saveBrain;
         window.toggleHideTask = toggleHideTask;
+        
+        // Widget drag and drop
+        function enableWidgetDragAndDrop() {
+            const container = document.getElementById('widgetsContainer');
+            const widgets = container.querySelectorAll('.widget');
+            
+            widgets.forEach(widget => {
+                widget.addEventListener('dragstart', handleWidgetDragStart);
+                widget.addEventListener('dragover', handleWidgetDragOver);
+                widget.addEventListener('drop', handleWidgetDrop);
+                widget.addEventListener('dragend', handleWidgetDragEnd);
+            });
+        }
+        
+        let draggedWidget = null;
+        
+        function handleWidgetDragStart(e) {
+            // Don't drag if clicking on contenteditable or buttons
+            if (e.target.contentEditable === 'true' || e.target.tagName === 'BUTTON' || e.target.tagName === 'TEXTAREA') {
+                e.preventDefault();
+                return;
+            }
+            draggedWidget = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        
+        function handleWidgetDragOver(e) {
+            e.preventDefault();
+            if (!draggedWidget) return;
+            
+            e.dataTransfer.dropEffect = 'move';
+            const container = document.getElementById('widgetsContainer');
+            const afterElement = getWidgetAfterElement(container, e.clientX, e.clientY);
+            
+            if (afterElement == null) {
+                container.appendChild(draggedWidget);
+            } else {
+                container.insertBefore(draggedWidget, afterElement);
+            }
+        }
+        
+        function handleWidgetDrop(e) {
+            e.preventDefault();
+        }
+        
+        async function handleWidgetDragEnd(e) {
+            this.classList.remove('dragging');
+            await saveWidgetOrder();
+            draggedWidget = null;
+        }
+        
+        function getWidgetAfterElement(container, x, y) {
+            const draggableElements = [...container.querySelectorAll('.widget:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offsetX = x - box.left - box.width / 2;
+                const offsetY = y - box.top - box.height / 2;
+                const offset = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+                
+                if (offset < closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.POSITIVE_INFINITY }).element;
+        }
+        
+        async function saveWidgetOrder() {
+            const { setDoc, doc } = window.firestoreModules;
+            const container = document.getElementById('widgetsContainer');
+            const widgets = container.querySelectorAll('.widget');
+            const order = [];
+            
+            widgets.forEach((widget, index) => {
+                const widgetId = widget.getAttribute('data-widget-id');
+                order.push(widgetId);
+            });
+            
+            try {
+                await setDoc(doc(window.db, 'settings', 'widget-order'), {
+                    order: order,
+                    timestamp: new Date()
+                });
+            } catch (error) {
+                console.error('Error saving widget order:', error);
+            }
+        }
+        
+        async function loadWidgetOrder() {
+            const { doc, getDoc } = window.firestoreModules;
+            try {
+                const docSnap = await getDoc(doc(window.db, 'settings', 'widget-order'));
+                if (docSnap.exists()) {
+                    const order = docSnap.data().order;
+                    const container = document.getElementById('widgetsContainer');
+                    
+                    order.forEach(widgetId => {
+                        const widget = container.querySelector(`[data-widget-id="${widgetId}"]`);
+                        if (widget) {
+                            container.appendChild(widget);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading widget order:', error);
+            }
+        }
+        
+        // Save task text when edited
+        async function saveTaskText(element) {
+            const taskId = element.getAttribute('data-task-id');
+            const widgetId = element.getAttribute('data-widget-id');
+            const newText = element.textContent.trim();
+            
+            if (newText === '') {
+                alert('Task cannot be empty');
+                await loadTasks(widgetId);
+                return;
+            }
+            
+            const { doc, updateDoc } = window.firestoreModules;
+            try {
+                await updateDoc(doc(window.db, widgetId, taskId), {
+                    text: newText
+                });
+            } catch (error) {
+                console.error('Error updating task text:', error);
+                alert('Error updating task');
+            }
+        }
+        
+        // Save widget title when edited
+        async function saveWidgetTitle(element) {
+            const widgetId = element.getAttribute('data-widget-id');
+            const newTitle = element.textContent.trim();
+            
+            if (newTitle === '') {
+                alert('Widget title cannot be empty');
+                await loadWidgetTitles();
+                return;
+            }
+            
+            const { setDoc, doc } = window.firestoreModules;
+            try {
+                await setDoc(doc(window.db, 'widget-titles', widgetId), {
+                    title: newTitle,
+                    timestamp: new Date()
+                });
+            } catch (error) {
+                console.error('Error updating widget title:', error);
+            }
+        }
+        
+        // Load widget titles
+        async function loadWidgetTitles() {
+            const { doc, getDoc } = window.firestoreModules;
+            const widgetIds = ['brain', 'daily-tasks', 'to-buy', 'one-time-tasks', 'ideas'];
+            
+            for (const widgetId of widgetIds) {
+                try {
+                    const docSnap = await getDoc(doc(window.db, 'widget-titles', widgetId));
+                    if (docSnap.exists()) {
+                        const title = docSnap.data().title;
+                        const titleElement = document.querySelector(`[data-widget-id="${widgetId}"].widget-title`);
+                        if (titleElement) {
+                            titleElement.textContent = title;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading widget title:', error);
+                }
+            }
+        }
+        
+        window.saveTaskText = saveTaskText;
+        window.saveWidgetTitle = saveWidgetTitle;
 
         // Make functions global
         window.loadTasks = loadTasks;
@@ -735,11 +946,18 @@
         window.updateTotalTasks = updateTotalTasks;
 
         // Load all tasks on page load
+        loadWidgetTitles();
+        loadWidgetOrder();
         loadBrain();
         loadTasks('daily-tasks');
         loadTasks('to-buy');
         loadTasks('one-time-tasks');
         loadTasks('ideas');
+        
+        // Enable widget drag and drop after page loads
+        setTimeout(() => {
+            enableWidgetDragAndDrop();
+        }, 500);
     </script>
 
     <script>
