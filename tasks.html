@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,581 +8,836 @@
         html {
             background: #2b2b2b;
         }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #2b2b2b;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 2px solid #610B0B;
+        }
+        
+        .datetime {
+            font-size: 1.2em;
+            color: #F5F5DC;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .total-tasks {
+            font-size: 1.5em;
+            color: #610B0B;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+        
+        .widgets-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .widget {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 2px solid #610B0B;
+        }
+        
+        .widget.brain-widget {
+            grid-column: 1 / -1;
+            min-height: 300px;
+        }
+        
+        .brain-textarea {
+            width: 100%;
+            min-height: 250px;
+            padding: 15px;
+            border: 2px solid #610B0B;
+            border-radius: 5px;
+            font-size: 16px;
+            background: #000000;
+            color: #F5F5DC;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            resize: vertical;
+        }
+        
+        .brain-textarea:focus {
+            outline: none;
+            border-color: #8B0000;
+            background: #1a1a1a;
+        }
+        
+        .save-brain-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #610B0B;
+            color: #F5F5DC;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .save-brain-btn:hover {
+            background: #8B0000;
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #610B0B;
+        }
+        
+        .widget-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #F5F5DC;
+        }
+        
+        .add-btn {
+            background: #610B0B;
+            color: #F5F5DC;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .add-btn:hover {
+            background: #8B0000;
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #000000;
+            border-radius: 5px;
+            transition: all 0.2s;
+            border-left: 3px solid #610B0B;
+            cursor: grab;
+        }
+        
+        .task-item:active {
+            cursor: grabbing;
+        }
+        
+        .task-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .task-item.hidden {
+            background: #3a3a3a;
+            border-left-color: #666;
+            opacity: 0.6;
+        }
+        
+        .task-item:hover:not(.hidden) {
+            background: #2a2a2a;
+        }
+        
+        .task-number {
+            color: #610B0B;
+            font-weight: 700;
+            margin-right: 10px;
+            min-width: 25px;
+        }
+        
+        .task-item.hidden .task-number {
+            color: #666;
+        }
+        
+        .task-text {
+            flex: 1;
+            color: #F5F5DC;
+        }
+        
+        .task-item.hidden .task-text {
+            color: #999;
+            text-decoration: line-through;
+        }
+        
+        .task-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .hide-btn, .delete-btn {
+            background: #610B0B;
+            color: #F5F5DC;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .hide-btn:hover, .delete-btn:hover {
+            background: #8B0000;
+        }
+        
+        .task-item.hidden .hide-btn {
+            background: #666;
+        }
+        
+        .task-item.hidden .hide-btn:hover {
+            background: #777;
+        }
+        
+        .widget-footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+            text-align: center;
+            color: #F5F5DC;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .input-container {
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .input-container.show {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .task-input {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #610B0B;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #000000;
+            color: #F5F5DC;
+        }
+        
+        .task-input:focus {
+            outline: none;
+            border-color: #8B0000;
+            background: #1a1a1a;
+        }
+        
+        .save-btn, .cancel-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .save-btn {
+            background: #610B0B;
+            color: #F5F5DC;
+        }
+        
+        .save-btn:hover {
+            background: #8B0000;
+        }
+        
+        .cancel-btn {
+            background: #333;
+            color: #F5F5DC;
+        }
+        
+        .cancel-btn:hover {
+            background: #444;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            text-align: center;
+            border: 2px solid #610B0B;
+        }
+        
+        .modal-text {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #F5F5DC;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .confirm-btn, .cancel-modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .confirm-btn {
+            background: #610B0B;
+            color: #F5F5DC;
+        }
+        
+        .confirm-btn:hover {
+            background: #8B0000;
+        }
+        
+        .cancel-modal-btn {
+            background: #333;
+            color: #F5F5DC;
+        }
+        
+        .cancel-modal-btn:hover {
+            background: #444;
+        }
 
-```
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: #2b2b2b;
-        min-height: 100vh;
-        padding: 20px;
-    }
-    
-    .header {
-        text-align: center;
-        margin-bottom: 30px;
-        padding: 25px;
-        background: #1a1a1a;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        border: 2px solid #610B0B;
-    }
-    
-    .datetime {
-        font-size: 1.2em;
-        color: #F5F5DC;
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
-    
-    .total-tasks {
-        font-size: 1.5em;
-        color: #610B0B;
-        font-weight: 700;
-        margin-top: 10px;
-    }
-    
-    .widgets-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    
-    .widget {
-        background: #1a1a1a;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        border: 2px solid #610B0B;
-    }
-    
-    .widget-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #610B0B;
-    }
-    
-    .widget-title {
-        font-size: 1.3em;
-        font-weight: 600;
-        color: #F5F5DC;
-    }
-    
-    .add-btn {
-        background: #610B0B;
-        color: #F5F5DC;
-        border: none;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        font-size: 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.3s;
-    }
-    
-    .add-btn:hover {
-        background: #8B0000;
-    }
-    
-    .task-list {
-        list-style: none;
-    }
-    
-    .task-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        margin-bottom: 8px;
-        background: #000000;
-        border-radius: 5px;
-        transition: background 0.2s;
-        border-left: 3px solid #610B0B;
-    }
-    
-    .task-item:hover {
-        background: #2a2a2a;
-    }
-    
-    .task-number {
-        color: #610B0B;
-        font-weight: 700;
-        margin-right: 10px;
-        min-width: 25px;
-    }
-    
-    .task-text {
-        flex: 1;
-        color: #F5F5DC;
-    }
-    
-    .delete-btn {
-        background: #610B0B;
-        color: #F5F5DC;
-        border: none;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        font-size: 16px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.3s;
-    }
-    
-    .delete-btn:hover {
-        background: #8B0000;
-    }
-    
-    .widget-footer {
-        margin-top: 15px;
-        padding-top: 10px;
-        border-top: 1px solid #333;
-        text-align: center;
-        color: #F5F5DC;
-        font-weight: 600;
-        font-size: 0.95em;
-    }
-    
-    .input-container {
-        display: none;
-        margin-top: 10px;
-    }
-    
-    .input-container.show {
-        display: flex;
-        gap: 8px;
-    }
-    
-    .task-input {
-        flex: 1;
-        padding: 8px;
-        border: 2px solid #610B0B;
-        border-radius: 5px;
-        font-size: 14px;
-        background: #000000;
-        color: #F5F5DC;
-    }
-    
-    .task-input:focus {
-        outline: none;
-        border-color: #8B0000;
-        background: #1a1a1a;
-    }
-    
-    .save-btn, .cancel-btn {
-        padding: 8px 15px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-    }
-    
-    .save-btn {
-        background: #610B0B;
-        color: #F5F5DC;
-    }
-    
-    .save-btn:hover {
-        background: #8B0000;
-    }
-    
-    .cancel-btn {
-        background: #333;
-        color: #F5F5DC;
-    }
-    
-    .cancel-btn:hover {
-        background: #444;
-    }
-    
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-    
-    .modal.show {
-        display: flex;
-    }
-    
-    .modal-content {
-        background: #1a1a1a;
-        padding: 30px;
-        border-radius: 10px;
-        max-width: 400px;
-        text-align: center;
-        border: 2px solid #610B0B;
-    }
-    
-    .modal-text {
-        margin-bottom: 20px;
-        font-size: 16px;
-        color: #F5F5DC;
-    }
-    
-    .modal-buttons {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-    }
-    
-    .confirm-btn, .cancel-modal-btn {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-    }
-    
-    .confirm-btn {
-        background: #610B0B;
-        color: #F5F5DC;
-    }
-    
-    .confirm-btn:hover {
-        background: #8B0000;
-    }
-    
-    .cancel-modal-btn {
-        background: #333;
-        color: #F5F5DC;
-    }
-    
-    .cancel-modal-btn:hover {
-        background: #444;
-    }
-
-    .loading {
-        text-align: center;
-        padding: 20px;
-        color: #999;
-    }
-</style>
-```
-
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
         <div class="datetime" id="datetime"></div>
         <div class="total-tasks" id="totalTasks">Total Tasks: 0</div>
     </div>
-
-```
-<div class="widgets-container">
-    <div class="widget" data-widget="daily-tasks">
-        <div class="widget-header">
-            <h2 class="widget-title">Daily Tasks</h2>
-            <button class="add-btn" onclick="showInput('daily-tasks')">+</button>
+    
+    <div class="widgets-container">
+        <div class="widget brain-widget">
+            <div class="widget-header">
+                <h2 class="widget-title">Brain</h2>
+            </div>
+            <textarea class="brain-textarea" id="brainText" placeholder="Write your thoughts here..."></textarea>
+            <button class="save-brain-btn" onclick="saveBrain()">Save Notes</button>
         </div>
-        <div class="input-container" id="input-daily-tasks">
-            <input type="text" class="task-input" placeholder="Enter task..." id="input-field-daily-tasks">
-            <button class="save-btn" onclick="addTask('daily-tasks')">Save</button>
-            <button class="cancel-btn" onclick="hideInput('daily-tasks')">Cancel</button>
+        
+        <div class="widget" data-widget="daily-tasks">
+            <div class="widget-header">
+                <h2 class="widget-title">Daily Tasks</h2>
+                <button class="add-btn" onclick="showInput('daily-tasks')">+</button>
+            </div>
+            <div class="input-container" id="input-daily-tasks">
+                <input type="text" class="task-input" placeholder="Enter task..." id="input-field-daily-tasks">
+                <button class="save-btn" onclick="addTask('daily-tasks')">Save</button>
+                <button class="cancel-btn" onclick="hideInput('daily-tasks')">Cancel</button>
+            </div>
+            <ul class="task-list" id="list-daily-tasks">
+                <li class="loading">Loading...</li>
+            </ul>
+            <div class="widget-footer" id="footer-daily-tasks">0 / 0 tasks</div>
         </div>
-        <ul class="task-list" id="list-daily-tasks">
-            <li class="loading">Loading...</li>
-        </ul>
-        <div class="widget-footer" id="footer-daily-tasks">0 / 0 tasks</div>
+        
+        <div class="widget" data-widget="to-buy">
+            <div class="widget-header">
+                <h2 class="widget-title">To Buy</h2>
+                <button class="add-btn" onclick="showInput('to-buy')">+</button>
+            </div>
+            <div class="input-container" id="input-to-buy">
+                <input type="text" class="task-input" placeholder="Enter item..." id="input-field-to-buy">
+                <button class="save-btn" onclick="addTask('to-buy')">Save</button>
+                <button class="cancel-btn" onclick="hideInput('to-buy')">Cancel</button>
+            </div>
+            <ul class="task-list" id="list-to-buy">
+                <li class="loading">Loading...</li>
+            </ul>
+            <div class="widget-footer" id="footer-to-buy">0 / 0 tasks</div>
+        </div>
+        
+        <div class="widget" data-widget="one-time-tasks">
+            <div class="widget-header">
+                <h2 class="widget-title">One-Time Tasks</h2>
+                <button class="add-btn" onclick="showInput('one-time-tasks')">+</button>
+            </div>
+            <div class="input-container" id="input-one-time-tasks">
+                <input type="text" class="task-input" placeholder="Enter task..." id="input-field-one-time-tasks">
+                <button class="save-btn" onclick="addTask('one-time-tasks')">Save</button>
+                <button class="cancel-btn" onclick="hideInput('one-time-tasks')">Cancel</button>
+            </div>
+            <ul class="task-list" id="list-one-time-tasks">
+                <li class="loading">Loading...</li>
+            </ul>
+            <div class="widget-footer" id="footer-one-time-tasks">0 / 0 tasks</div>
+        </div>
+        
+        <div class="widget" data-widget="ideas">
+            <div class="widget-header">
+                <h2 class="widget-title">Ideas</h2>
+                <button class="add-btn" onclick="showInput('ideas')">+</button>
+            </div>
+            <div class="input-container" id="input-ideas">
+                <input type="text" class="task-input" placeholder="Enter idea..." id="input-field-ideas">
+                <button class="save-btn" onclick="addTask('ideas')">Save</button>
+                <button class="cancel-btn" onclick="hideInput('ideas')">Cancel</button>
+            </div>
+            <ul class="task-list" id="list-ideas">
+                <li class="loading">Loading...</li>
+            </ul>
+            <div class="widget-footer" id="footer-ideas">0 / 0 tasks</div>
+        </div>
     </div>
     
-    <div class="widget" data-widget="to-buy">
-        <div class="widget-header">
-            <h2 class="widget-title">To Buy</h2>
-            <button class="add-btn" onclick="showInput('to-buy')">+</button>
-        </div>
-        <div class="input-container" id="input-to-buy">
-            <input type="text" class="task-input" placeholder="Enter item..." id="input-field-to-buy">
-            <button class="save-btn" onclick="addTask('to-buy')">Save</button>
-            <button class="cancel-btn" onclick="hideInput('to-buy')">Cancel</button>
-        </div>
-        <ul class="task-list" id="list-to-buy">
-            <li class="loading">Loading...</li>
-        </ul>
-        <div class="widget-footer" id="footer-to-buy">0 / 0 tasks</div>
-    </div>
-    
-    <div class="widget" data-widget="one-time-tasks">
-        <div class="widget-header">
-            <h2 class="widget-title">One-Time Tasks</h2>
-            <button class="add-btn" onclick="showInput('one-time-tasks')">+</button>
-        </div>
-        <div class="input-container" id="input-one-time-tasks">
-            <input type="text" class="task-input" placeholder="Enter task..." id="input-field-one-time-tasks">
-            <button class="save-btn" onclick="addTask('one-time-tasks')">Save</button>
-            <button class="cancel-btn" onclick="hideInput('one-time-tasks')">Cancel</button>
-        </div>
-        <ul class="task-list" id="list-one-time-tasks">
-            <li class="loading">Loading...</li>
-        </ul>
-        <div class="widget-footer" id="footer-one-time-tasks">0 / 0 tasks</div>
-    </div>
-    
-    <div class="widget" data-widget="ideas">
-        <div class="widget-header">
-            <h2 class="widget-title">Ideas</h2>
-            <button class="add-btn" onclick="showInput('ideas')">+</button>
-        </div>
-        <div class="input-container" id="input-ideas">
-            <input type="text" class="task-input" placeholder="Enter idea..." id="input-field-ideas">
-            <button class="save-btn" onclick="addTask('ideas')">Save</button>
-            <button class="cancel-btn" onclick="hideInput('ideas')">Cancel</button>
-        </div>
-        <ul class="task-list" id="list-ideas">
-            <li class="loading">Loading...</li>
-        </ul>
-        <div class="widget-footer" id="footer-ideas">0 / 0 tasks</div>
-    </div>
-</div>
-
-<div class="modal" id="deleteModal">
-    <div class="modal-content">
-        <p class="modal-text">Are you sure you want to delete this item?</p>
-        <div class="modal-buttons">
-            <button class="confirm-btn" id="confirmDelete">Delete</button>
-            <button class="cancel-modal-btn" onclick="hideModal()">Cancel</button>
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <p class="modal-text">Are you sure you want to delete this item?</p>
+            <div class="modal-buttons">
+                <button class="confirm-btn" id="confirmDelete">Delete</button>
+                <button class="cancel-modal-btn" onclick="hideModal()">Cancel</button>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Firebase SDK -->
-<script type="module">
-    // Import Firebase modules
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-    // Check if user is logged in
-    if (!sessionStorage.getItem('isLoggedIn')) {
-        window.location.href = 'index.html';
-    }
+        // Check if user is logged in
+        if (!sessionStorage.getItem('isLoggedIn')) {
+            window.location.href = 'index.html';
+        }
 
-    // Your Firebase configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBE5FS6Wi1wrqJPG5IZKu19yJMsQxLEunw",
-        authDomain: "jtasks-8c050.firebaseapp.com",
-        projectId: "jtasks-8c050",
-        storageBucket: "jtasks-8c050.firebasestorage.app",
-        messagingSenderId: "688345697494",
-        appId: "1:688345697494:web:5d26bcb208862914e38d77"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Store globally for other functions
-    window.db = db;
-    window.firestoreModules = { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy };
-
-    // Update datetime
-    function updateDateTime() {
-        const now = new Date();
-        const options = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE5FS6Wi1wrqJPG5IZKu19yJMsQxLEunw",
+            authDomain: "jtasks-8c050.firebaseapp.com",
+            projectId: "jtasks-8c050",
+            storageBucket: "jtasks-8c050.firebasestorage.app",
+            messagingSenderId: "688345697494",
+            appId: "1:688345697494:web:5d26bcb208862914e38d77"
         };
-        document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
-    }
-    
-    updateDateTime();
-    setInterval(updateDateTime, 1000);
 
-    // Load tasks from Firestore
-    async function loadTasks(widgetId) {
-        const { collection, getDocs, query, orderBy } = window.firestoreModules;
-        const listElement = document.getElementById(`list-${widgetId}`);
-        listElement.innerHTML = '';
-        
-        try {
-            const q = query(collection(window.db, widgetId), orderBy('timestamp', 'desc'));
-            const querySnapshot = await getDocs(q);
-            
-            if (querySnapshot.empty) {
-                listElement.innerHTML = '<li class="loading" style="color: #999;">No items yet</li>';
-                updateWidgetCount(widgetId, 0, 0);
-                updateTotalTasks();
-                return;
-            }
-            
-            let taskNumber = 1;
-            querySnapshot.forEach((doc) => {
-                const task = doc.data();
-                createTaskElement(widgetId, doc.id, task.text, taskNumber);
-                taskNumber++;
-            });
-            
-            updateWidgetCount(widgetId, querySnapshot.size, querySnapshot.size);
-            updateTotalTasks();
-        } catch (error) {
-            console.error('Error loading tasks:', error);
-            listElement.innerHTML = '<li class="loading" style="color: #610B0B;">Error loading tasks</li>';
-        }
-    }
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    // Create task element
-    function createTaskElement(widgetId, taskId, taskText, taskNumber) {
-        const listElement = document.getElementById(`list-${widgetId}`);
-        const loadingElement = listElement.querySelector('.loading');
-        if (loadingElement) {
-            loadingElement.remove();
+        // Store globally for other functions
+        window.db = db;
+        window.firestoreModules = { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, setDoc, updateDoc };
+
+        // Update datetime
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
         }
         
-        const li = document.createElement('li');
-        li.className = 'task-item';
-        li.innerHTML = `
-            <span class="task-number">${taskNumber}.</span>
-            <span class="task-text">${taskText}</span>
-            <button class="delete-btn" onclick="showDeleteModal('${widgetId}', '${taskId}')">−</button>
-        `;
-        listElement.appendChild(li);
-    }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
 
-    // Update widget count
-    function updateWidgetCount(widgetId, count, total) {
-        const footer = document.getElementById(`footer-${widgetId}`);
-        footer.textContent = `${count} / ${total} tasks`;
-    }
-
-    // Update total tasks count
-    function updateTotalTasks() {
-        const widgets = ['daily-tasks', 'to-buy', 'one-time-tasks', 'ideas'];
-        let total = 0;
-        
-        widgets.forEach(widgetId => {
-            const list = document.getElementById(`list-${widgetId}`);
-            const tasks = list.querySelectorAll('.task-item');
-            total += tasks.length;
-        });
-        
-        document.getElementById('totalTasks').textContent = `Total Tasks: ${total}`;
-    }
-
-    // Make functions global
-    window.loadTasks = loadTasks;
-    window.createTaskElement = createTaskElement;
-    window.updateWidgetCount = updateWidgetCount;
-    window.updateTotalTasks = updateTotalTasks;
-
-    // Load all tasks on page load
-    loadTasks('daily-tasks');
-    loadTasks('to-buy');
-    loadTasks('one-time-tasks');
-    loadTasks('ideas');
-</script>
-
-<script>
-    let deleteTaskId = null;
-    let deleteWidgetId = null;
-
-    function showInput(widgetId) {
-        const inputContainer = document.getElementById(`input-${widgetId}`);
-        inputContainer.classList.add('show');
-        document.getElementById(`input-field-${widgetId}`).focus();
-    }
-
-    function hideInput(widgetId) {
-        const inputContainer = document.getElementById(`input-${widgetId}`);
-        inputContainer.classList.remove('show');
-        document.getElementById(`input-field-${widgetId}`).value = '';
-    }
-
-    async function addTask(widgetId) {
-        const inputField = document.getElementById(`input-field-${widgetId}`);
-        const taskText = inputField.value.trim();
-        
-        if (taskText === '') {
-            return;
-        }
-
-        const { collection, addDoc } = window.firestoreModules;
-        
-        try {
-            console.log('Adding task to:', widgetId);
-            console.log('Task text:', taskText);
-            
-            await addDoc(collection(window.db, widgetId), {
-                text: taskText,
-                timestamp: new Date()
-            });
-            
-            console.log('Task added successfully');
-            
-            // Reload the entire list to update numbers
-            await window.loadTasks(widgetId);
-            hideInput(widgetId);
-        } catch (error) {
-            console.error('Error adding task:', error);
-            console.error('Error details:', error.message);
-            alert('Error adding task: ' + error.message);
-        }
-    }
-
-    function showDeleteModal(widgetId, taskId) {
-        deleteWidgetId = widgetId;
-        deleteTaskId = taskId;
-        document.getElementById('deleteModal').classList.add('show');
-    }
-
-    function hideModal() {
-        document.getElementById('deleteModal').classList.remove('show');
-        deleteTaskId = null;
-        deleteWidgetId = null;
-    }
-
-    document.getElementById('confirmDelete').addEventListener('click', async function() {
-        if (deleteTaskId && deleteWidgetId) {
-            const { doc, deleteDoc } = window.firestoreModules;
+        // Load tasks from Firestore
+        async function loadTasks(widgetId) {
+            const { collection, getDocs, query, orderBy } = window.firestoreModules;
+            const listElement = document.getElementById(`list-${widgetId}`);
+            listElement.innerHTML = '';
             
             try {
-                await deleteDoc(doc(window.db, deleteWidgetId, deleteTaskId));
-                await window.loadTasks(deleteWidgetId);
-                hideModal();
+                const q = query(collection(window.db, widgetId), orderBy('order', 'asc'));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    listElement.innerHTML = '<li class="loading" style="color: #999;">No items yet</li>';
+                    updateWidgetCount(widgetId, 0, 0);
+                    updateTotalTasks();
+                    return;
+                }
+                
+                const tasks = [];
+                querySnapshot.forEach((doc) => {
+                    tasks.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Sort by order
+                tasks.sort((a, b) => (a.order || 0) - (b.order || 0));
+                
+                let visibleTaskNumber = 1;
+                tasks.forEach((task, index) => {
+                    const displayNumber = task.hidden ? '' : visibleTaskNumber;
+                    if (!task.hidden) visibleTaskNumber++;
+                    createTaskElement(widgetId, task.id, task.text, displayNumber, task.hidden, index);
+                });
+                
+                const visibleCount = tasks.filter(t => !t.hidden).length;
+                updateWidgetCount(widgetId, visibleCount, tasks.length);
+                updateTotalTasks();
+                
+                // Enable drag and drop
+                enableDragAndDrop(widgetId);
             } catch (error) {
-                console.error('Error deleting task:', error);
-                alert('Error deleting task. Please try again.');
+                console.error('Error loading tasks:', error);
+                listElement.innerHTML = '<li class="loading" style="color: #610B0B;">Error loading tasks</li>';
             }
         }
-    });
 
-    // Allow Enter key to add task
-    document.querySelectorAll('.task-input').forEach(input => {
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const widgetId = this.id.replace('input-field-', '');
-                addTask(widgetId);
+        // Create task element
+        function createTaskElement(widgetId, taskId, taskText, taskNumber, isHidden, order) {
+            const listElement = document.getElementById(`list-${widgetId}`);
+            const loadingElement = listElement.querySelector('.loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+            
+            const li = document.createElement('li');
+            li.className = 'task-item' + (isHidden ? ' hidden' : '');
+            li.setAttribute('data-task-id', taskId);
+            li.setAttribute('data-order', order);
+            li.setAttribute('draggable', 'true');
+            
+            const hideIcon = isHidden ? '↓' : '↑';
+            const numberDisplay = taskNumber ? `${taskNumber}.` : '';
+            
+            li.innerHTML = `
+                <span class="task-number">${numberDisplay}</span>
+                <span class="task-text">${taskText}</span>
+                <div class="task-buttons">
+                    <button class="hide-btn" onclick="toggleHideTask('${widgetId}', '${taskId}')">${hideIcon}</button>
+                    <button class="delete-btn" onclick="showDeleteModal('${widgetId}', '${taskId}')">−</button>
+                </div>
+            `;
+            listElement.appendChild(li);
+        }
+
+        // Update widget count
+        function updateWidgetCount(widgetId, count, total) {
+            const footer = document.getElementById(`footer-${widgetId}`);
+            footer.textContent = `${count} / ${total} tasks`;
+        }
+
+        // Update total tasks count
+        function updateTotalTasks() {
+            const widgets = ['daily-tasks', 'to-buy', 'one-time-tasks', 'ideas'];
+            let total = 0;
+            
+            widgets.forEach(widgetId => {
+                const list = document.getElementById(`list-${widgetId}`);
+                const tasks = list.querySelectorAll('.task-item:not(.hidden)');
+                total += tasks.length;
+            });
+            
+            document.getElementById('totalTasks').textContent = `Total Tasks: ${total}`;
+        }
+        
+        // Enable drag and drop
+        function enableDragAndDrop(widgetId) {
+            const listElement = document.getElementById(`list-${widgetId}`);
+            const items = listElement.querySelectorAll('.task-item');
+            
+            items.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragover', handleDragOver);
+                item.addEventListener('drop', handleDrop);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+        }
+        
+        let draggedItem = null;
+        
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            
+            const afterElement = getDragAfterElement(this.parentElement, e.clientY);
+            if (afterElement == null) {
+                this.parentElement.appendChild(draggedItem);
+            } else {
+                this.parentElement.insertBefore(draggedItem, afterElement);
+            }
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+        }
+        
+        async function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            
+            // Get widget ID from parent
+            const listElement = this.closest('.task-list');
+            const widgetId = listElement.id.replace('list-', '');
+            
+            // Update order in Firestore
+            const items = listElement.querySelectorAll('.task-item');
+            const updates = [];
+            
+            items.forEach((item, index) => {
+                const taskId = item.getAttribute('data-task-id');
+                updates.push(updateTaskOrder(widgetId, taskId, index));
+            });
+            
+            await Promise.all(updates);
+            await loadTasks(widgetId);
+        }
+        
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.task-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+        
+        async function updateTaskOrder(widgetId, taskId, order) {
+            const { doc, updateDoc } = window.firestoreModules;
+            try {
+                await updateDoc(doc(window.db, widgetId, taskId), { order });
+            } catch (error) {
+                console.error('Error updating order:', error);
+            }
+        }
+        
+        // Toggle hide task
+        async function toggleHideTask(widgetId, taskId) {
+            const { doc, updateDoc, getDocs, collection, query } = window.firestoreModules;
+            
+            try {
+                // Get current task
+                const q = query(collection(window.db, widgetId));
+                const querySnapshot = await getDocs(q);
+                let currentTask = null;
+                
+                querySnapshot.forEach((taskDoc) => {
+                    if (taskDoc.id === taskId) {
+                        currentTask = taskDoc.data();
+                    }
+                });
+                
+                if (currentTask) {
+                    await updateDoc(doc(window.db, widgetId, taskId), {
+                        hidden: !currentTask.hidden
+                    });
+                    await loadTasks(widgetId);
+                }
+            } catch (error) {
+                console.error('Error toggling hide:', error);
+            }
+        }
+        
+        // Brain notepad functions
+        async function loadBrain() {
+            const { doc, getDocs, collection } = window.firestoreModules;
+            try {
+                const querySnapshot = await getDocs(collection(window.db, 'brain'));
+                querySnapshot.forEach((doc) => {
+                    document.getElementById('brainText').value = doc.data().text || '';
+                });
+            } catch (error) {
+                console.error('Error loading brain:', error);
+            }
+        }
+        
+        async function saveBrain() {
+            const { setDoc, doc } = window.firestoreModules;
+            const text = document.getElementById('brainText').value;
+            
+            try {
+                await setDoc(doc(window.db, 'brain', 'notes'), {
+                    text: text,
+                    timestamp: new Date()
+                });
+                alert('Notes saved!');
+            } catch (error) {
+                console.error('Error saving brain:', error);
+                alert('Error saving notes: ' + error.message);
+            }
+        }
+        
+        window.saveBrain = saveBrain;
+        window.toggleHideTask = toggleHideTask;
+
+        // Make functions global
+        window.loadTasks = loadTasks;
+        window.createTaskElement = createTaskElement;
+        window.updateWidgetCount = updateWidgetCount;
+        window.updateTotalTasks = updateTotalTasks;
+
+        // Load all tasks on page load
+        loadBrain();
+        loadTasks('daily-tasks');
+        loadTasks('to-buy');
+        loadTasks('one-time-tasks');
+        loadTasks('ideas');
+    </script>
+
+    <script>
+        let deleteTaskId = null;
+        let deleteWidgetId = null;
+
+        function showInput(widgetId) {
+            const inputContainer = document.getElementById(`input-${widgetId}`);
+            inputContainer.classList.add('show');
+            document.getElementById(`input-field-${widgetId}`).focus();
+        }
+
+        function hideInput(widgetId) {
+            const inputContainer = document.getElementById(`input-${widgetId}`);
+            inputContainer.classList.remove('show');
+            document.getElementById(`input-field-${widgetId}`).value = '';
+        }
+
+        async function addTask(widgetId) {
+            const inputField = document.getElementById(`input-field-${widgetId}`);
+            const taskText = inputField.value.trim();
+            
+            if (taskText === '') {
+                return;
+            }
+
+            const { collection, addDoc } = window.firestoreModules;
+            
+            try {
+                console.log('Adding task to:', widgetId);
+                console.log('Task text:', taskText);
+                
+                // Get current max order
+                const { collection, getDocs, query } = window.firestoreModules;
+                const q = query(collection(window.db, widgetId));
+                const querySnapshot = await getDocs(q);
+                let maxOrder = -1;
+                querySnapshot.forEach((doc) => {
+                    const order = doc.data().order || 0;
+                    if (order > maxOrder) maxOrder = order;
+                });
+                
+                const { addDoc } = window.firestoreModules;
+                await addDoc(collection(window.db, widgetId), {
+                    text: taskText,
+                    timestamp: new Date(),
+                    order: maxOrder + 1,
+                    hidden: false
+                });
+                
+                console.log('Task added successfully');
+                
+                // Reload the entire list to update numbers
+                await window.loadTasks(widgetId);
+                hideInput(widgetId);
+            } catch (error) {
+                console.error('Error adding task:', error);
+                console.error('Error details:', error.message);
+                alert('Error adding task: ' + error.message);
+            }
+        }
+
+        function showDeleteModal(widgetId, taskId) {
+            deleteWidgetId = widgetId;
+            deleteTaskId = taskId;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+            deleteTaskId = null;
+            deleteWidgetId = null;
+        }
+
+        document.getElementById('confirmDelete').addEventListener('click', async function() {
+            if (deleteTaskId && deleteWidgetId) {
+                const { doc, deleteDoc } = window.firestoreModules;
+                
+                try {
+                    await deleteDoc(doc(window.db, deleteWidgetId, deleteTaskId));
+                    await window.loadTasks(deleteWidgetId);
+                    hideModal();
+                } catch (error) {
+                    console.error('Error deleting task:', error);
+                    alert('Error deleting task. Please try again.');
+                }
             }
         });
-    });
-</script>
-```
 
+        // Allow Enter key to add task
+        document.querySelectorAll('.task-input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const widgetId = this.id.replace('input-field-', '');
+                    addTask(widgetId);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
